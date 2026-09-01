@@ -219,6 +219,8 @@
             line-height: 1.18;
             color: var(--text);
             font-weight: 700;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .hero-sub {
@@ -226,11 +228,25 @@
             font-size: 16px;
             max-width: 600px;
             line-height: 1.7;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @media(max-width:600px) {
+            .hero-sub {
+                font-size: 15px;
+                max-width: 100%;
+                line-height: 1.6;
+            }
         }
 
         @media(max-width:420px) {
             .hero-sub {
-                font-size: 14.5px;
+                font-size: 14px;
+                line-height: 1.6;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
             }
         }
 
@@ -239,6 +255,26 @@
             gap: 14px;
             margin-top: 30px;
             flex-wrap: wrap;
+        }
+
+        @media(max-width:420px) {
+            .hero-links {
+                gap: 10px;
+                margin-top: 24px;
+            }
+
+            .hero-links .btn {
+                font-size: 12px;
+                padding: 9px 14px;
+                flex: 0 1 auto;
+            }
+        }
+
+        @media(max-width:360px) {
+            .hero-links .btn {
+                font-size: 11px;
+                padding: 8px 12px;
+            }
         }
 
         .btn {
@@ -252,6 +288,24 @@
             gap: 8px;
             border: 1px solid var(--line);
             transition: border-color .15s, background .15s;
+            white-space: nowrap;
+        }
+
+        @media(max-width:420px) {
+            .btn {
+                font-size: 12px;
+                padding: 9px 14px;
+                white-space: nowrap;
+            }
+        }
+
+        @media(max-width:360px) {
+            .btn {
+                font-size: 10.5px;
+                padding: 7px 10px;
+                gap: 5px;
+                white-space: nowrap;
+            }
         }
 
         .btn-primary {
@@ -1857,12 +1911,10 @@
             const containerRect = mpStagesContainer.getBoundingClientRect();
             const containerWidth = containerRect.width;
 
-            // Get the position of each stage node relative to the container
             const positions = [];
             mpStages.forEach((stage) => {
                 const node = stage.querySelector('.mp-node');
                 const nodeRect = node.getBoundingClientRect();
-                // Calculate position as percentage of container width
                 const pos = ((nodeRect.left + nodeRect.width / 2) - containerRect.left) / containerWidth * 100;
                 positions.push(pos);
             });
@@ -1882,7 +1934,6 @@
         }
 
         function mpSetPercent(pct) {
-            // Clamp to valid range
             const clamped = Math.max(0, Math.min(100, pct));
             mpTrackFill.style.width = clamped + '%';
             mpPacket.style.left = clamped + '%';
@@ -1895,25 +1946,20 @@
             });
         }
 
-        function mpAnimateSegment(fromIdx, toIdx, duration, onDone) {
-            // Recalculate positions before each animation to handle layout changes
-            mpPositions = calculateNodePositions();
-
-            const from = mpPositions[fromIdx];
-            const to = mpPositions[toIdx];
+        // Animate from a start position to an end position
+        function mpAnimateSegment(fromPos, toPos, duration, onDone) {
             const start = performance.now();
 
             function tick(now) {
                 const p = Math.min((now - start) / duration, 1);
                 const eased = mpEaseInOut(p);
-                const currentPos = from + (to - from) * eased;
+                const currentPos = fromPos + (toPos - fromPos) * eased;
                 mpSetPercent(currentPos);
 
                 if (p < 1) {
                     mpRAF = requestAnimationFrame(tick);
                 } else {
-                    mpSetPercent(to); // Ensure exact position
-                    mpSetStageClasses(toIdx);
+                    mpSetPercent(toPos);
                     if (onDone) onDone();
                 }
             }
@@ -1921,29 +1967,46 @@
         }
 
         function runMiniPipelineOnce(onDone) {
-            // Calculate initial positions
             mpPositions = calculateNodePositions();
 
             let i = 0;
+            // Start from 0%, not from the first checkpoint
+            mpSetPercent(0);
             mpSetStageClasses(0);
-            mpSetPercent(mpPositions[0]);
 
-            function holdThenMove() {
-                const hold = mpHoldMs[i] || 150;
-                mpTimer = setTimeout(() => {
-                    if (i < mpStages.length - 1) {
-                        const from = i;
-                        const to = i + 1;
-                        mpAnimateSegment(from, to, mpSegmentMs[from], () => {
-                            i = to;
-                            holdThenMove();
-                        });
-                    } else if (onDone) {
-                        mpTimer = setTimeout(onDone, 400);
-                    }
-                }, hold);
+            // Animate from 0% to the first checkpoint
+            const firstPos = mpPositions[0];
+            const firstDuration = 500; // Slightly faster for the first segment
+
+            function startNextSegment() {
+                if (i < mpStages.length - 1) {
+                    const from = i;
+                    const to = i + 1;
+                    const fromPos = mpPositions[from];
+                    const toPos = mpPositions[to];
+
+                    // Set the current stage as active
+                    mpSetStageClasses(from);
+
+                    // Animate to the next position
+                    mpAnimateSegment(fromPos, toPos, mpSegmentMs[from], () => {
+                        i = to;
+                        // Mark the current stage as done
+                        mpSetStageClasses(i);
+                        // Hold at this position
+                        mpTimer = setTimeout(startNextSegment, mpHoldMs[i] || 450);
+                    });
+                } else if (onDone) {
+                    mpTimer = setTimeout(onDone, 400);
+                }
             }
-            holdThenMove();
+
+            // First animation: from 0 to first checkpoint
+            mpAnimateSegment(0, firstPos, firstDuration, () => {
+                i = 1;
+                mpSetStageClasses(1);
+                mpTimer = setTimeout(startNextSegment, mpHoldMs[1] || 450);
+            });
         }
 
         function mpResetInstant() {
@@ -1962,7 +2025,6 @@
                 return;
             }
 
-            // Add resize listener to recalculate positions on window resize
             let resizeTimeout;
             const handleResize = () => {
                 clearTimeout(resizeTimeout);
@@ -1988,7 +2050,6 @@
             const mpObserver = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
-                        // Small delay to ensure layout is complete
                         setTimeout(() => {
                             playMiniPipeline();
                         }, 100);
