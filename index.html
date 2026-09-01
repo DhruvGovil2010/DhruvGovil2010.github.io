@@ -79,9 +79,15 @@
             }
         }
 
-        @media(max-width:420px) {
+        @media(max-width:480px) {
             .wrap {
-                padding: 0 16px;
+                padding: 0 14px;
+            }
+        }
+
+        @media(max-width:360px) {
+            .wrap {
+                padding: 0 10px;
             }
         }
 
@@ -183,9 +189,21 @@
             padding: 64px 0 18px;
         }
 
+        @media(max-width:480px) {
+            .hero {
+                padding: 30px 0 12px;
+            }
+        }
+
+        @media(max-width:360px) {
+            .hero {
+                padding: 20px 0 10px;
+            }
+        }
+
         @media(max-width:420px) {
             .hero {
-                padding: 40px 0 12px;
+                padding: 30px 0 10px;
             }
         }
 
@@ -214,6 +232,14 @@
             margin-bottom: 22px;
         }
 
+        @media(max-width:420px) {
+            .hero .role-tag {
+                font-size: 11px;
+                padding: 4px 10px;
+                margin-bottom: 16px;
+            }
+        }
+
         .hero h1 {
             font-size: clamp(26px, 7vw, 42px);
             line-height: 1.18;
@@ -223,10 +249,22 @@
             overflow-wrap: break-word;
         }
 
+        @media(max-width:420px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media(max-width:360px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+        }
+
         .hero-sub {
             margin-top: 18px;
             font-size: 16px;
-            max-width: 600px;
+            max-width: 100%;
             line-height: 1.7;
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -235,7 +273,7 @@
         @media(max-width:600px) {
             .hero-sub {
                 font-size: 15px;
-                max-width: 100%;
+                /* max-width: 100%; */
                 line-height: 1.6;
             }
         }
@@ -244,9 +282,16 @@
             .hero-sub {
                 font-size: 14px;
                 line-height: 1.6;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
+                /* word-wrap: break-word; */
+                /* overflow-wrap: break-word; */
                 hyphens: auto;
+                /* margin-top: 12px; */
+            }
+        }
+
+        @media(max-width:360px) {
+            .hero-sub {
+                font-size: 13px;
             }
         }
 
@@ -260,20 +305,19 @@
         @media(max-width:420px) {
             .hero-links {
                 gap: 10px;
-                margin-top: 24px;
+                margin-top: 20px;
             }
 
             .hero-links .btn {
                 font-size: 12px;
                 padding: 9px 14px;
-                flex: 0 1 auto;
             }
         }
 
         @media(max-width:360px) {
             .hero-links .btn {
                 font-size: 11px;
-                padding: 8px 12px;
+                padding: 7px 10px;
             }
         }
 
@@ -1441,7 +1485,7 @@
                             every push before merge.</li>
                     </ul>
 
-                    <div class="mini-pipeline">
+                    <!-- <div class="mini-pipeline">
                         <div class="mp-label">how the async pipeline actually works —</div>
                         <div class="mp-stages">
                             <div class="mp-track">
@@ -1473,7 +1517,7 @@
                             <div>API response time<b class="up">&lt; 100ms</b></div>
                             <div>deploys<b class="up">20+ / 100% pass</b></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="stack"><span class="chip">Node.js</span><span class="chip">Redis</span><span
                             class="chip">BullMQ</span><span class="chip">AI</span><span class="chip">CI/CD</span><span
@@ -1901,16 +1945,16 @@
         }
 
         // ---- mini pipeline (inside HireFlow card): smooth, synced animation ----
+        // (commented out – uncomment if needed)
+        /*
         const mpStages = document.querySelectorAll('.mp-stage');
         const mpTrackFill = document.getElementById('mp-track-fill');
         const mpPacket = document.getElementById('mp-packet');
         const mpStagesContainer = document.querySelector('.mp-stages');
 
-        // Calculate exact positions based on actual DOM layout
         function calculateNodePositions() {
             const containerRect = mpStagesContainer.getBoundingClientRect();
             const containerWidth = containerRect.width;
-
             const positions = [];
             mpStages.forEach((stage) => {
                 const node = stage.querySelector('.mp-node');
@@ -1921,7 +1965,6 @@
             return positions;
         }
 
-        // Per-segment travel time (ms) - slower for AI Parse
         const mpSegmentMs = [650, 650, 1400, 650];
         const mpHoldMs = [450, 450, 450, 900, 700];
         let mpPlayed = false;
@@ -1946,16 +1989,13 @@
             });
         }
 
-        // Animate from a start position to an end position
         function mpAnimateSegment(fromPos, toPos, duration, onDone) {
             const start = performance.now();
-
             function tick(now) {
                 const p = Math.min((now - start) / duration, 1);
                 const eased = mpEaseInOut(p);
                 const currentPos = fromPos + (toPos - fromPos) * eased;
                 mpSetPercent(currentPos);
-
                 if (p < 1) {
                     mpRAF = requestAnimationFrame(tick);
                 } else {
@@ -1968,40 +2008,27 @@
 
         function runMiniPipelineOnce(onDone) {
             mpPositions = calculateNodePositions();
-
             let i = 0;
-            // Start from 0%, not from the first checkpoint
             mpSetPercent(0);
             mpSetStageClasses(0);
-
-            // Animate from 0% to the first checkpoint
             const firstPos = mpPositions[0];
-            const firstDuration = 500; // Slightly faster for the first segment
-
+            const firstDuration = 500;
             function startNextSegment() {
                 if (i < mpStages.length - 1) {
                     const from = i;
                     const to = i + 1;
                     const fromPos = mpPositions[from];
                     const toPos = mpPositions[to];
-
-                    // Set the current stage as active
                     mpSetStageClasses(from);
-
-                    // Animate to the next position
                     mpAnimateSegment(fromPos, toPos, mpSegmentMs[from], () => {
                         i = to;
-                        // Mark the current stage as done
                         mpSetStageClasses(i);
-                        // Hold at this position
                         mpTimer = setTimeout(startNextSegment, mpHoldMs[i] || 450);
                     });
                 } else if (onDone) {
                     mpTimer = setTimeout(onDone, 400);
                 }
             }
-
-            // First animation: from 0 to first checkpoint
             mpAnimateSegment(0, firstPos, firstDuration, () => {
                 i = 1;
                 mpSetStageClasses(1);
@@ -2017,14 +2044,12 @@
         function playMiniPipeline() {
             if (mpPlayed || !mpStages.length) return;
             mpPlayed = true;
-
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 mpPositions = calculateNodePositions();
                 mpStages.forEach(s => s.classList.add('done'));
                 mpSetPercent(mpPositions[mpPositions.length - 1]);
                 return;
             }
-
             let resizeTimeout;
             const handleResize = () => {
                 clearTimeout(resizeTimeout);
@@ -2035,7 +2060,6 @@
                 }, 200);
             };
             window.addEventListener('resize', handleResize);
-
             function loop() {
                 runMiniPipelineOnce(function () {
                     mpResetInstant();
@@ -2058,6 +2082,7 @@
             }, { threshold: 0.3 });
             mpObserver.observe(mpBlock);
         }
+        */
     </script>
 
 </body>
