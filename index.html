@@ -241,6 +241,7 @@
         }
 
         .hero h1 {
+            max-width: 720px;
             font-size: clamp(26px, 7vw, 42px);
             line-height: 1.18;
             color: var(--text);
@@ -264,7 +265,8 @@
         .hero-sub {
             margin-top: 18px;
             font-size: 16px;
-            max-width: 100%;
+            max-width: 720px;
+            /* match about-lede */
             line-height: 1.7;
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -273,7 +275,8 @@
         @media(max-width:600px) {
             .hero-sub {
                 font-size: 15px;
-                /* max-width: 100%; */
+                max-width: 100%;
+                /* full width on mobile */
                 line-height: 1.6;
             }
         }
@@ -282,10 +285,7 @@
             .hero-sub {
                 font-size: 14px;
                 line-height: 1.6;
-                /* word-wrap: break-word; */
-                /* overflow-wrap: break-word; */
                 hyphens: auto;
-                /* margin-top: 12px; */
             }
         }
 
