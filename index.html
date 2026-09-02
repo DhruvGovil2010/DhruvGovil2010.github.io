@@ -187,23 +187,27 @@
         /* ---- hero (two-column: copy + proficiency chart) ---- */
         .hero {
             padding: 64px 0 18px;
+            padding-left: 24px;
         }
 
         @media(max-width:480px) {
             .hero {
                 padding: 30px 0 12px;
+                padding-left: 16px;
             }
         }
 
         @media(max-width:360px) {
             .hero {
                 padding: 20px 0 10px;
+                padding-left: 12px;
             }
         }
 
         @media(max-width:420px) {
             .hero {
                 padding: 30px 0 10px;
+                padding-left: 16px;
             }
         }
 
@@ -373,17 +377,21 @@
 
         /* ---- hero proficiency chart (star / radar) ---- */
         .prof-card {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 26px 24px 22px;
-            max-width: 100%;
-            overflow: hidden;
+            overflow: visible;
+            /* was hidden — was clipping axis labels */
         }
 
-        @media(max-width:420px) {
-            .prof-card {
-                padding: 20px 14px 16px;
+        @media(max-width:480px) {
+            .wrap {
+                padding: 0 14px 0 14px;
+                padding-right: 20px;
+                /* extra breathing room on the right edge */
+            }
+        }
+
+        @media(max-width:360px) {
+            .wrap {
+                padding-right: 16px;
             }
         }
 
