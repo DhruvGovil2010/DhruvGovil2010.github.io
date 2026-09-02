@@ -1719,7 +1719,11 @@
                 <p>Open to backend and full-stack roles, freelance builds, and anything involving queues, APIs, or
                     systems that need to stay up.</p>
                 <div class="contact-links">
-                    <a class="btn btn-primary" href="mailto:govildhruv2010@gmail.com">Email me</a>
+                    <a class="btn btn-primary"
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=govildhruv2010@gmail.com" target="_blank"
+                        rel="noopener noreferrer">
+                        Email me
+                    </a>
                     <a class="btn btn-ghost" href="tel:+918755871867">+91 87558 71867</a>
                     <a class="btn btn-ghost" href="#" id="github-link-2">GitHub</a>
                     <a class="btn btn-ghost" href="#" id="linkedin-link-2">LinkedIn</a>
@@ -1741,25 +1745,35 @@
             linkedin: "https://linkedin.com/in/govildhruv/",
             leetcode: "https://leetcode.com/DhruvGovil2010",
             gfg: "https://www.geeksforgeeks.org/user/dpsdhr27",
-            resume: "./resume.pdf",
+            resume: "./Resume_Dhruv_Govil.pdf",
             hireflowRepo: "https://github.com/DhruvGovil2010/ats-ai-backend",
             hireflowLive: "https://ats-ai-backend-73u8.onrender.com/health",
             chatappRepo: "https://github.com/DhruvGovil2010/ChatApp",
             pdfEngineerLive: "https://chromewebstore.google.com/detail/pdf-engineer-offline-comp/nchciajmojfogknljmfndimemagcgegc",
             breatheSafeLive: "https://breatheindia.netlify.app/"
         };
-        document.getElementById('github-link').href = LINKS.github;
-        document.getElementById('github-link-2').href = LINKS.github;
-        document.getElementById('linkedin-link').href = LINKS.linkedin;
-        document.getElementById('linkedin-link-2').href = LINKS.linkedin;
-        document.getElementById('leetcode-link').href = LINKS.leetcode;
-        document.getElementById('gfg-link').href = LINKS.gfg;
-        document.getElementById('resume-link').href = LINKS.resume;
-        document.getElementById('hireflow-repo').href = LINKS.hireflowRepo;
-        document.getElementById('hireflow-live').href = LINKS.hireflowLive;
-        document.getElementById('chatapp-repo').href = LINKS.chatappRepo;
-        document.getElementById('pdfengineer-live').href = LINKS.pdfEngineerLive;
-        document.getElementById('breathesafe-live').href = LINKS.breatheSafeLive;
+
+        const externalLinks = {
+            'github-link': LINKS.github,
+            'github-link-2': LINKS.github,
+            'linkedin-link': LINKS.linkedin,
+            'linkedin-link-2': LINKS.linkedin,
+            'leetcode-link': LINKS.leetcode,
+            'gfg-link': LINKS.gfg,
+            'resume-link': LINKS.resume,
+            'hireflow-repo': LINKS.hireflowRepo,
+            'hireflow-live': LINKS.hireflowLive,
+            'chatapp-repo': LINKS.chatappRepo,
+            'pdfengineer-live': LINKS.pdfEngineerLive,
+            'breathesafe-live': LINKS.breatheSafeLive
+        };
+
+        Object.entries(externalLinks).forEach(([id, url]) => {
+            const link = document.getElementById(id);
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+        });
 
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
